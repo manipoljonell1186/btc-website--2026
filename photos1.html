@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Photo Gallery</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 30px;
+            color: #003366;
+        }
+
+        /* Gallery */
+        .gallery {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+
+            border-radius: 10px;
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.03);
+            opacity: 0.8;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+
+            position: fixed;
+            z-index: 1000;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.9);
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+
+            border-radius: 10px;
+        }
+
+        /* Close button */
+        .close {
+            position: absolute;
+
+            top: 20px;
+            right: 35px;
+
+            color: white;
+            font-size: 45px;
+
+            cursor: pointer;
+        }
+
+        /* Previous / Next */
+        .prev,
+        .next {
+            position: absolute;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: white;
+
+            font-size: 50px;
+
+            cursor: pointer;
+
+            padding: 20px;
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery img {
+                height: 250px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>School Photo Gallery</h1>
+
+
+    <!-- PHOTO GALLERY -->
+
+    <div class="gallery">
+
+        <img src="school building/btc ground.jpg"
+             onclick="openLightbox(0)"
+             alt="School">
+
+        <img src="images/classroom.jpg"
+             onclick="openLightbox(1)"
+             alt="Classroom">
+
+        <img src="images/foundation.jpg"
+             onclick="openLightbox(2)"
+             alt="Foundation Day">
+
+        <img src="images/graduation.jpg"
+             onclick="openLightbox(3)"
+             alt="Graduation">
+
+        <img src="images/teachers.jpg"
+             onclick="openLightbox(4)"
+             alt="Teachers">
+		
+		<img src="images/teachers.jpg"
+             onclick="openLightbox(4)"
+             alt="Teachers">
+        
+		<img src="images/students.jpg"
+             onclick="openLightbox(5)"
+             alt="Students">
+
+    </div>
+
+
+    <!-- LIGHTBOX -->
+
+    <div id="lightbox" class="lightbox">
+
+        <span class="close" onclick="closeLightbox()">
+            &times;
+        </span>
+
+        <span class="prev" onclick="changePhoto(-1)">
+            &#10094;
+        </span>
+
+        <img id="lightboxImage" src="" alt="">
+
+        <span class="next" onclick="changePhoto(1)">
+            &#10095;
+        </span>
+
+    </div>
+
+
+    <script>
+
+        /* Images */
+
+        const photos = [
+            "school building/btc ground.jpg",
+            "images/classroom.jpg",
+            "images/foundation.jpg",
+            "images/graduation.jpg",
+            "images/teachers.jpg",
+			"images/teachers.jpg",
+            "images/students.jpg"
+        ];
+
+
+        let currentPhoto = 0;
+
+
+        /* Open Lightbox */
+
+        function openLightbox(index) {
+
+            currentPhoto = index;
+
+            document.getElementById("lightboxImage").src =
+                photos[currentPhoto];
+
+            document.getElementById("lightbox").style.display =
+                "flex";
+        }
+
+
+        /* Close Lightbox */
+
+        function closeLightbox() {
+
+            document.getElementById("lightbox").style.display =
+                "none";
+        }
+
+
+        /* Next / Previous */
+
+        function changePhoto(direction) {
+
+            currentPhoto = currentPhoto + direction;
+
+
+            if (currentPhoto >= photos.length) {
+                currentPhoto = 0;
+            }
+
+
+            if (currentPhoto < 0) {
+                currentPhoto = photos.length - 1;
+            }
+
+
+            document.getElementById("lightboxImage").src =
+                photos[currentPhoto];
+        }
+
+
+        /* Keyboard Controls */
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+                closeLightbox();
+            }
+
+            if (event.key === "ArrowRight") {
+                changePhoto(1);
+            }
+
+            if (event.key === "ArrowLeft") {
+                changePhoto(-1);
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

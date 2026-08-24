@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>School Photo Gallery</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        header {
+            background: linear-gradient(135deg, #003366, #0066cc);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        header h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 16px;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================== */
+
+        nav {
+            background: #00264d;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 16px 22px;
+            transition: 0.3s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #007bff;
+        }
+
+        /* =========================
+           PAGE TITLE
+        ========================== */
+
+        .page-title {
+            text-align: center;
+            padding: 45px 20px 25px;
+        }
+
+        .page-title h2 {
+            color: #003366;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* =========================
+           PHOTO GALLERY
+        ========================== */
+
+        .gallery {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .photo {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+
+            transition: 0.3s;
+        }
+
+        .photo:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.20);
+        }
+
+        .photo img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+
+            display: block;
+
+            cursor: pointer;
+
+            transition: 0.4s;
+        }
+
+        .photo:hover img {
+            transform: scale(1.06);
+        }
+
+        .caption {
+            padding: 18px;
+            text-align: center;
+        }
+
+        .caption h3 {
+            color: #003366;
+            margin-bottom: 7px;
+            font-size: 20px;
+        }
+
+        .caption p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* =========================
+           LIGHTBOX
+        ========================== */
+
+        .lightbox {
+            display: none;
+
+            position: fixed;
+            z-index: 9999;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0,0,0,0.92);
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 30px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 80vh;
+
+            text-align: center;
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 75vh;
+
+            border-radius: 8px;
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-caption {
+            color: white;
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        /* =========================
+           CLOSE BUTTON
+        ========================== */
+
+        .close {
+            position: absolute;
+
+            top: 20px;
+            right: 35px;
+
+            color: white;
+
+            font-size: 45px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .close:hover {
+            color: #ff4444;
+        }
+
+        /* =========================
+           PREVIOUS / NEXT BUTTONS
+        ========================== */
+
+        .prev,
+        .next {
+            position: absolute;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            background: rgba(255,255,255,0.15);
+
+            color: white;
+
+            border: none;
+
+            font-size: 40px;
+
+            width: 60px;
+            height: 70px;
+
+            cursor: pointer;
+
+            border-radius: 8px;
+
+            transition: 0.3s;
+        }
+
+        .prev:hover,
+        .next:hover {
+            background: rgba(255,255,255,0.35);
+        }
+
+        .prev {
+            left: 25px;
+        }
+
+        .next {
+            right: 25px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            background: #00264d;
+            color: white;
+            text-align: center;
+
+            padding: 25px;
+
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 5px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 900px) {
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 26px;
+            }
+
+            nav {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .photo img {
+                height: 250px;
+            }
+
+            .prev,
+            .next {
+                font-size: 28px;
+
+                width: 45px;
+                height: 55px;
+            }
+
+            .prev {
+                left: 10px;
+            }
+
+            .next {
+                right: 10px;
+            }
+
+            .close {
+                right: 15px;
+                top: 10px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+
+<!-- =========================
+     SCHOOL HEADER
+========================== -->
+
+<header>
+
+    <h1>OUR SCHOOL</h1>
+
+    <p>
+        Responsibility • Excellence • Compassion
+    </p>
+
+</header>
+
+
+<!-- =========================
+     NAVIGATION
+========================== -->
+
+<nav>
+
+    <a href="index.html">Home</a>
+
+    <a href="about.html">
+        About Us
+    </a>
+
+    <a href="faculty.html">
+        Faculty & Staff
+    </a>
+
+    <a href="photos.html" class="active">
+        Photos
+    </a>
+
+    <a href="videos.html">
+        Videos
+    </a>
+
+    <a href="contact.html">
+        Contact
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     PAGE TITLE
+========================== -->
+
+<section class="page-title">
+
+    <h2>
+        School Photo Gallery
+    </h2>
+
+    <p>
+        Explore our school activities, events, students, and memorable moments.
+    </p>
+
+</section>
+
+
+<!-- =========================
+     PHOTO GALLERY
+========================== -->
+
+<section class="gallery">
+
+
+    <!-- PHOTO 1 -->
+
+    <div class="photo">
+
+        <img
+            src="school building/btc ground.jpg"
+            alt="School Building"
+            onclick="openLightbox(0)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Our School
+            </h3>
+
+            <p>
+                Welcome to our school campus.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 2 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/ground demo.jpg"
+            alt="Classroom Activities"
+            onclick="openLightbox(1)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Student Activities
+            </h3>
+
+            <p>
+                Students learning together.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 3 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/basketball.jpg"
+            alt="Sports Activities"
+            onclick="openLightbox(2)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Sports Activities
+            </h3>
+
+            <p>
+                Students showing their athletic skills.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 4 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/intramural opening.jpg"
+            alt="Intramurals"
+            onclick="openLightbox(3)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Intramurals
+            </h3>
+
+            <p>
+                Fun, teamwork, and friendly competition.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 5 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/flag raising.jpg"
+            alt="Foundation Day"
+            onclick="openLightbox(4)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Foundation Day
+            </h3>
+
+            <p>
+                Celebrating our school's achievements.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 6 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/judges.jpg"
+            alt="Graduation"
+            onclick="openLightbox(5)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                The Judges
+            </h3>
+
+            
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 7 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/muse 1.jpg"
+            alt="Faculty and Staff"
+            onclick="openLightbox(6)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Targaryen
+            </h3>
+
+            <p>
+                Grade 12
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 8 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/muse 2.jpg"
+            alt="School Event"
+            onclick="openLightbox(7)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                Royal Kings
+            </h3>
+
+            <p>
+                Grade 11
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO 9 -->
+
+    <div class="photo">
+
+        <img
+            src="sports images/muse 3.jpg"
+            alt="Students"
+            onclick="openLightbox(8)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                House of Tully
+            </h3>
+
+            <p>
+                Grade 10
+            </p>
+
+        </div>
+	<!-- PHOTO 10 -->
+
+		<div class="photo">
+
+			<img
+				src="sports images/muse 4.jpg"
+				alt="Students"
+				onclick="openLightbox(9)"
+        >
+
+        <div class="caption">
+
+            <h3>
+                House of Lannister
+            </h3>
+
+            <p>
+                Grade 9
+            </p>
+
+        </div>
+    </div>
+
+
+</section>
+
+
+<!-- =========================
+     LIGHTBOX
+========================== -->
+
+<div id="lightbox" class="lightbox">
+
+    <!-- CLOSE -->
+
+    <span
+        class="close"
+        onclick="closeLightbox()"
+    >
+        &times;
+    </span>
+
+
+    <!-- PREVIOUS -->
+
+    <button
+        class="prev"
+        onclick="changePhoto(-1)"
+    >
+        &#10094;
+    </button>
+
+
+    <!-- IMAGE -->
+
+    <div class="lightbox-content">
+
+        <img
+            id="lightboxImage"
+            src=""
+            alt=""
+        >
+
+        <div
+            id="lightboxCaption"
+            class="lightbox-caption">
+        </div>
+
+    </div>
+
+
+    <!-- NEXT -->
+
+    <button
+        class="next"
+        onclick="changePhoto(1)"
+    >
+        &#10095;
+    </button>
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer>
+
+    <p>
+        &copy; 2026 Our School. All Rights Reserved.
+    </p>
+
+    <p>
+        School Website
+    </p>
+
+</footer>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+
+<script>
+
+    /* =========================
+       PHOTO DATA
+    ========================== */
+
+    const photos = [
+
+        {
+            src: "school building/btc ground.jpg",
+            caption: "Our School - Welcome to our school campus."
+        },
+
+        {
+            src: "sports images/ground demo.jpg",
+            caption: "Students Activities "
+        },
+
+        {
+            src: "sports images/basketball.jpg",
+            caption: "Sports Activities - Students showing their athletic skills."
+        },
+
+        {
+            src: "sports images/flag raising.jpg",
+            caption: "Intramurals - Fun, teamwork, and friendly competition."
+        },
+
+        {
+            src: "sports images/flag raising.jpg",
+            caption: "Foundation Day - Celebrating our school's achievements."
+        },
+
+        {
+            src: "sports images/judges.jpg",
+            caption: "Graduation - Celebrating the success of our graduates."
+        },
+
+        {
+            src: "sports images/muse 1.jpg",
+            caption: "Faculty & Staff - Our dedicated teachers and staff."
+        },
+
+        {
+            src: "sports images/muse 2.jpg",
+            caption: "School Events - Memorable moments from school activities."
+        },
+
+        {
+            src: "sports images/muse 3.jpg",
+            caption: "Our Students - Building friendships and memories."
+        }
+		
+    ];
+
+
+    let currentPhoto = 0;
+
+
+    /* =========================
+       OPEN LIGHTBOX
+    ========================== */
+
+    function openLightbox(index) {
+
+        currentPhoto = index;
+
+        document
+            .getElementById("lightbox")
+            .classList.add("active");
+
+        showPhoto();
+
+    }
+
+
+    /* =========================
+       CLOSE LIGHTBOX
+    ========================== */
+
+    function closeLightbox() {
+
+        document
+            .getElementById("lightbox")
+            .classList.remove("active");
+
+    }
+
+
+    /* =========================
+       DISPLAY PHOTO
+    ========================== */
+
+    function showPhoto() {
+
+        const image =
+            document.getElementById("lightboxImage");
+
+        const caption =
+            document.getElementById("lightboxCaption");
+
+
+        image.src =
+            photos[currentPhoto].src;
+
+        image.alt =
+            photos[currentPhoto].caption;
+
+        caption.textContent =
+            photos[currentPhoto].caption;
+
+    }
+
+
+    /* =========================
+       NEXT / PREVIOUS
+    ========================== */
+
+    function changePhoto(direction) {
+
+        currentPhoto += direction;
+
+
+        if (currentPhoto < 0) {
+
+            currentPhoto =
+                photos.length - 1;
+
+        }
+
+
+        if (currentPhoto >= photos.length) {
+
+            currentPhoto = 0;
+
+        }
+
+
+        showPhoto();
+
+    }
+
+
+    /* =========================
+       KEYBOARD CONTROLS
+    ========================== */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            const lightbox =
+                document.getElementById("lightbox");
+
+
+            if (!lightbox.classList.contains("active")) {
+                return;
+            }
+
+
+            if (event.key === "Escape") {
+
+                closeLightbox();
+
+            }
+
+
+            if (event.key === "ArrowLeft") {
+
+                changePhoto(-1);
+
+            }
+
+
+            if (event.key === "ArrowRight") {
+
+                changePhoto(1);
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       CLICK OUTSIDE IMAGE
+    ========================== */
+
+    document
+        .getElementById("lightbox")
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (event.target === this) {
+
+                    closeLightbox();
+
+                }
+
+            }
+        );
+
+</script>
+
+</body>
+</html>
