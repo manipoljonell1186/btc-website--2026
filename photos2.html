@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>School Photo Gallery</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 16px;
+        }
+
+        /* GALLERY */
+        .gallery {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            background: white;
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            border-radius: 7px;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* LIGHTBOX */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        /* CLOSE BUTTON */
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: white;
+            font-size: 45px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* PREVIOUS / NEXT */
+        .prev,
+        .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 45px;
+            cursor: pointer;
+            padding: 15px;
+            user-select: none;
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        .prev:hover,
+        .next:hover,
+        .close:hover {
+            color: #ccc;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 25px;
+            }
+
+            .gallery {
+                width: 95%;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .gallery-item img {
+                height: 160px;
+            }
+
+            .prev,
+            .next {
+                font-size: 32px;
+            }
+
+            .close {
+                font-size: 35px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>School Photo Gallery</h1>
+        <p>Memories and highlights from our school activities</p>
+    </header>
+
+
+    <!-- PHOTO GALLERY -->
+    <div class="gallery">
+
+        <div class="gallery-item">
+            <img src="images/flag raising.jpg"
+                 alt="School Activity"
+                 onclick="openLightbox(0)">
+				 
+			<div class="caption">
+			<h3>Flag Raising Ceremony</h3>
+			
+		</div>	
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo2.jpg"
+                 alt="School Event"
+                 onclick="openLightbox(1)">
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo3.jpg"
+                 alt="Students"
+                 onclick="openLightbox(2)">
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo4.jpg"
+                 alt="School Program"
+                 onclick="openLightbox(3)">
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo5.jpg"
+                 alt="School Activity"
+                 onclick="openLightbox(4)">
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo6.jpg"
+                 alt="Students Activity"
+                 onclick="openLightbox(5)">
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo7.jpg"
+                 alt="School Event"
+                 onclick="openLightbox(6)">
+        </div>
+
+        <div class="gallery-item">
+            <img src="images/photo8.jpg"
+                 alt="School Celebration"
+                 onclick="openLightbox(7)">
+        </div>
+
+		<div class="gallery-item">
+            <img src="images/photo9.jpg"
+                 alt="School Celebration"
+                 onclick="openLightbox(7)">
+        
+		</div>
+		<div class="gallery-item">
+            <img src="images/ground demo.jpg"
+                 alt="School Celebration"
+                 onclick="openLightbox(7)">
+        
+		</div>
+	</div>
+
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+
+        <span class="close" onclick="closeLightbox()">&times;</span>
+
+        <span class="prev" onclick="changeImage(-1)">&#10094;</span>
+
+        <img id="lightboxImage" src="" alt="Full Size Photo">
+
+        <span class="next" onclick="changeImage(1)">&#10095;</span>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Our School | All Rights Reserved</p>
+    </footer>
+
+
+    <script>
+
+        // List of gallery images
+        const images = [
+            "images/flag raising.jpg",
+            "images/photo2.jpg",
+            "images/photo3.jpg",
+            "images/photo4.jpg",
+            "images/photo5.jpg",
+            "images/photo6.jpg",
+            "images/photo7.jpg",
+            "images/photo8.jpg",
+			"images/photo9.jpg",
+			"images/ground demo.jpg"
+        ];
+
+        let currentIndex = 0;
+
+
+        // Open lightbox
+        function openLightbox(index) {
+
+            currentIndex = index;
+
+            document.getElementById("lightboxImage").src =
+                images[currentIndex];
+
+            document.getElementById("lightbox").style.display =
+                "flex";
+        }
+
+
+        // Close lightbox
+        function closeLightbox() {
+
+            document.getElementById("lightbox").style.display =
+                "none";
+        }
+
+
+        // Next / Previous
+        function changeImage(direction) {
+
+            currentIndex += direction;
+
+            if (currentIndex >= images.length) {
+                currentIndex = 0;
+            }
+
+            if (currentIndex < 0) {
+                currentIndex = images.length - 1;
+            }
+
+            document.getElementById("lightboxImage").src =
+                images[currentIndex];
+        }
+
+
+        // Close when clicking outside image
+        document.getElementById("lightbox").addEventListener(
+            "click",
+            function(event) {
+
+                if (event.target === this) {
+                    closeLightbox();
+                }
+
+            }
+        );
+
+
+        // Keyboard controls
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+                closeLightbox();
+            }
+
+            if (event.key === "ArrowRight") {
+                changeImage(1);
+            }
+
+            if (event.key === "ArrowLeft") {
+                changeImage(-1);
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
